@@ -1,9 +1,8 @@
-import express  from "express";
-import colors from "colors";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import cors from "cors";
-
+import dotenv from "dotenv";
+import express from "express";
+import mongoDBConnection from "./config/db.js";
+import colors from "colors";
 
 // environment variables
 dotenv.config();
@@ -17,10 +16,10 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.urlencoded({ extended:false }));
-
+app.use(express.urlencoded({ extended: false }));
 
 // server listening
-app.listen(PORT,() => {
-    console.log(`server listening on ${PORT}`.bgGreen);
+app.listen(PORT, () => {
+	mongoDBConnection();
+	console.log(`server listening on ${PORT}`.bgGreen);
 });
