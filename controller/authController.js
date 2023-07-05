@@ -1,5 +1,7 @@
 import asyncHandler from "express-async-handler";
-import { CreateToken } from "../utility/jwt";
+import { CreateToken } from "../utility/jwt.js";
+import User from "../models/UserSchema.js";
+import bcrypt from "bcryptjs";
 /**
  * user login method
  * @POST /Login

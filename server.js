@@ -4,7 +4,7 @@ import express from "express";
 import mongoDBConnection from "./config/db.js";
 import colors from "colors";
 import userRoute from "./routes/userRoute.js";
-import authRouter from "./routes/authRoute.js";
+import authRoute from "./routes/authRoute.js";
 
 // environment variables
 dotenv.config();
@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // routes
 app.use("/api/v1/user", userRoute);
-app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/auth", authRoute);
 // server listening
 app.listen(PORT, () => {
 	mongoDBConnection();
