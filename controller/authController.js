@@ -1,7 +1,7 @@
-import asyncHandler from "express-async-handler";
-import { CreateToken } from "../utility/jwt.js";
-import User from "../models/UserSchema.js";
 import bcrypt from "bcryptjs";
+import asyncHandler from "express-async-handler";
+import User from "../models/UserSchema.js";
+import { CreateToken, RefreshToken } from "../utility/jwt.js";
 /**
  * user login method
  * @POST /Login
@@ -24,6 +24,7 @@ export const UserLogin = asyncHandler(async (req, res) => {
 
 	// access token
 	const accessToken = CreateToken(checkUser.email, 7);
+	const refreashToken = RefreshToken(checkUser.email, 360);
 
 	res.cookie("access_token", accessToken, {
 		httpOnly: false,
@@ -33,6 +34,7 @@ export const UserLogin = asyncHandler(async (req, res) => {
 
 	res.status(200).json({
 		token: accessToken,
+		refreashToken: refreashToken,
 		user: checkUser,
 	});
 });
