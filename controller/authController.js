@@ -23,8 +23,14 @@ export const UserLogin = asyncHandler(async (req, res) => {
 		return res.status(404).json({ message: "Password dose not match" }); //
 
 	// access token
-	const accessToken = CreateToken(checkUser.email, 7);
-	const refreashToken = RefreshToken(checkUser.email, 360);
+	const accessToken = CreateToken(
+		checkUser.email,
+		process.env.ACCESS_TOKEN_EXPIRY
+	);
+	const refreashToken = RefreshToken(
+		checkUser.email,
+		process.env.REFRESH_TOKEN_EXPIRY
+	);
 
 	res.cookie("access_token", accessToken, {
 		httpOnly: false,
