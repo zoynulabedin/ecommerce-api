@@ -15,5 +15,9 @@ export const UserLogin = asyncHandler(async (req, res) => {
 	if (!checkUser) return res.status(404).json({ message: "User not found" }); //
 
     // password match
-    
+	const passwordMatch = await bcrypt.compare(password, checkUser.password);
+	if(!passwordMatch) return res.status(404).json({ message: "Password dose not match" }); //
+
+    // access token
+	const accessToken =  jwt
 });
