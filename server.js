@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import mongoDBConnection from "./config/db.js";
 import colors from "colors";
+import userRoute from "./routes/userRoute.js";
 
 // environment variables
 dotenv.config();
@@ -18,6 +19,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
+// routes
+app.use("/api/v1/user", userRoute);
 // server listening
 app.listen(PORT, () => {
 	mongoDBConnection();
