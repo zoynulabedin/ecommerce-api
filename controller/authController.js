@@ -40,7 +40,6 @@ export const UserLogin = asyncHandler(async (req, res) => {
 
 	res.status(200).json({
 		token: accessToken,
-		refreashToken: refreashToken,
 		user: checkUser,
 	});
 });
@@ -52,14 +51,35 @@ export const UserLogin = asyncHandler(async (req, res) => {
  */
 
 export const me = (req, res) => {
-
 	if (!req.me) {
 		return res.status(404).json({
 			message: "You do not have permission",
 		});
-		
 	}
 	res.status(200).json({
 		me: req.me,
 	});
 };
+
+/**
+ * loggout controller
+ * @get /me
+ * @access Private
+ */
+
+export const userLoggout = asyncHandler(async (req, res) => {
+	const cookies = req.cookies;
+	console.log(cookies.access_token);
+	if (!cookies?.access_token)
+		return res.status(400).json({
+			message: "Already loggout",
+		});
+	res
+		.clearCookie("access_token", {
+			httpOnly: false,
+			secure: false,
+		})
+		.json({
+			message: "logout successfully",
+		});
+});
