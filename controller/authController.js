@@ -44,3 +44,20 @@ export const UserLogin = asyncHandler(async (req, res) => {
 		user: checkUser,
 	});
 });
+
+/**
+ * me controller
+ * @POST /me
+ * @access Private
+ */
+
+export const me = (req, res) => {
+	if (!req.me) {
+		return res.status(404).json({
+			message: "You do not have permission",
+		});
+		res.status(200).json({
+			me: req.me,
+		});
+	}
+};
