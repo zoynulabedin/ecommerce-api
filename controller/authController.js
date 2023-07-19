@@ -32,15 +32,17 @@ export const UserLogin = asyncHandler(async (req, res) => {
 		process.env.REFRESH_TOKEN_EXPIRY
 	);
 
-	res.cookie("access_token", accessToken, {
-		httpOnly: false,
-		secure: false,
+	res.cookie("accessToken", accessToken, {
+		httpOnly: true,
+		secure: process.env.APP_ENV === "development" ? false : true,
+		sameSite: "strict",
 		maxAge: 7 * 24 * 60 * 60 * 1000,
 	});
 
 	res.status(200).json({
 		token: accessToken,
 		user: checkUser,
+		message: "Login successful",
 	});
 });
 
@@ -69,13 +71,12 @@ export const me = (req, res) => {
 
 export const userLoggout = asyncHandler(async (req, res) => {
 	const cookies = req.cookies;
-	console.log(cookies.access_token);
-	if (!cookies?.access_token)
+	if (!cookies?.accessToken)
 		return res.status(400).json({
 			message: "Already loggout",
 		});
 	res
-		.clearCookie("access_token", {
+		.clearCookie("accessToken", {
 			httpOnly: false,
 			secure: false,
 		})

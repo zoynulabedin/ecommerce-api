@@ -23,7 +23,7 @@ export const tokenVerify = (req, res, next) => {
 			}
 			const me = await User.findOne({
 				email: decode.email,
-			});
+			}).select("-password");
 			req.me = me;
 			next();
 		})

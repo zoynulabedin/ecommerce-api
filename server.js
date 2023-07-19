@@ -5,7 +5,7 @@ import mongoDBConnection from "./config/db.js";
 import colors from "colors";
 import userRoute from "./routes/userRoute.js";
 import authRoute from "./routes/authRoute.js";
-
+import cors from "cors";
 // environment variables
 dotenv.config();
 
@@ -19,6 +19,12 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
+app.use(
+	cors({
+		origin: "http://localhost:3000",
+		credentials: true,
+	})
+);
 
 // routes
 app.use("/api/v1/user", userRoute);
