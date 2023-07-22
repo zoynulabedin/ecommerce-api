@@ -5,7 +5,7 @@ import { tokenVerify } from "../middleware/tokenVerify.js";
 const authRouter = express.Router();
 
 authRouter.route("/login").post(UserLogin);
-authRouter.route("/me").post(tokenVerify, me);
+authRouter.route("/me").get(tokenVerify, me);
 authRouter.route("/loggout").post(userLoggout);
 
 export default authRouter;

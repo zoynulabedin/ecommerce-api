@@ -3,15 +3,14 @@ import jwt from "jsonwebtoken";
 import User from "../models/UserSchema.js";
 
 export const tokenVerify = (req, res, next) => {
-	const authHeader = req.headers.authorization || req.headers.Authorization;
-
-	if (!authHeader) {
+	const accessToken = req.cookies;
+	const token = accessToken.accessToken;
+	if (!token) {
 		return res.status(400).json({
 			message: "unauthorized access",
 		});
 	}
 
-	const token = authHeader.split(" ")[1];
 	jwt.verify(
 		token,
 		process.env.ACCESS_TOKEN_SECRET_KEY,

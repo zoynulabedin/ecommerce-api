@@ -58,9 +58,7 @@ export const me = (req, res) => {
 			message: "You do not have permission",
 		});
 	}
-	res.status(200).json({
-		me: req.me,
-	});
+	res.status(200).json(req.me);
 };
 
 /**
