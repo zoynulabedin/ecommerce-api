@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import asyncHandler from "express-async-handler";
 import User from "../models/UserSchema.js";
+import { makeHash } from "../utility/hash.js";
 import { CreateToken, RefreshToken } from "../utility/jwt.js";
 /**
  * user login method
@@ -81,4 +82,82 @@ export const userLoggout = asyncHandler(async (req, res) => {
 		.json({
 			message: "logout successfully",
 		});
+});
+
+/**
+ * password change
+ */
+
+export const passwordChange = asyncHandler(async (req, res) => {
+	const { oldpassword, newpassword, confirmpassword } = req.body;
+	const currentUser = req.me;
+	const passwordmatch = bcrypt.compare(oldpassword, currentUser.password);
+
+	if (!oldpassword)
+		return res.status(404).json({
+			message: "Please enter your old password",
+		});
+
+	if (!passwordmatch)
+		return res.status(404).json({
+			message: "Please enter your new password",
+		});
+	if (newpassword !== confirmpassword)
+		return res.status(404).json({
+			message: "Password Not match",
+		});
+
+	// update password
+	const user = await User.findByIdAndUpdate(currentUser._id, {
+		password: makeHash(confirmpassword),
+	});
+	if (!user)
+		return res.status(404).json({
+			message: "Password Not match",
+		});
+	res.status(200).json({
+		message: "Password changed successfully",
+	});
+});
+
+/**
+ * info update
+ */
+
+export const profileUpdate = asyncHandler(async (req, res) => {
+	const { birtdate, email, mobile, address, city, state, zipcode, country } =
+		req.body;
+	const currentUser = req.me;
+	if (
+		!birtdate ||
+		!email ||
+		!mobile ||
+		!address ||
+		!city ||
+		!state ||
+		!zipcode ||
+		!country
+	)
+		return res.status(404).json({
+			message: "Please fillup all fields",
+		});
+
+	// profile update
+	const user = await User.findByIdAndUpdate(currentUser._id, {
+		birtdate,
+		email,
+		mobile,
+		address,
+		city,
+		state,
+		zipcode,
+		country,
+	});
+	if (!user)
+		return res.status(404).json({
+			message: "user not found",
+		});
+	return res.status(200).json({
+		message: "Profile updated successfully",
+	});
 });

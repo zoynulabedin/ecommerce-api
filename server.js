@@ -1,11 +1,12 @@
+import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import color from "colors";
 import mongoDBConnection from "./config/db.js";
-import colors from "colors";
-import userRoute from "./routes/userRoute.js";
 import authRoute from "./routes/authRoute.js";
-import cors from "cors";
+import userRoute from "./routes/userRoute.js";
 // environment variables
 dotenv.config();
 
@@ -17,6 +18,7 @@ const app = express();
  */
 
 app.use(express.json());
+app.use(bodyParser.json()); 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(

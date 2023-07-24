@@ -4,6 +4,7 @@ import User from "../models/UserSchema.js";
 
 export const tokenVerify = (req, res, next) => {
 	const accessToken = req.cookies;
+
 	const token = accessToken.accessToken;
 	if (!token) {
 		return res.status(400).json({
@@ -22,9 +23,11 @@ export const tokenVerify = (req, res, next) => {
 			}
 			const me = await User.findOne({
 				email: decode.email,
-			}).select("-password");
+			});
 			req.me = me;
+		
 			next();
+
 		})
 	);
 };

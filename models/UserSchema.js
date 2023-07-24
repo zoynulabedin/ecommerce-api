@@ -6,6 +6,31 @@ const UserSchema = mongoose.Schema(
 			trim: true,
 			required: true,
 		},
+
+		birtdate: {
+			type: String,
+			default: null,
+		},
+		address: {
+			type: String,
+			default: null,
+		},
+		city: {
+			type: String,
+			default: null,
+		},
+		state: {
+			type: String,
+			default: null,
+		},
+		zipcode: {
+			type: String,
+			default: null,
+		},
+		country: {
+			type: String,
+			default: null,
+		},
 		email: {
 			type: String,
 			trim: true,
