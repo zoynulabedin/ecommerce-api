@@ -7,6 +7,8 @@ import color from "colors";
 import mongoDBConnection from "./config/db.js";
 import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
+import permissionRoute from "./routes/permissionRoute.js";
+import RoleRoute from "./routes/roleRoute.js";
 // environment variables
 dotenv.config();
 
@@ -31,6 +33,8 @@ app.use(
 // routes
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/permission", permissionRoute);
+app.use("/api/v1/role", RoleRoute);
 // server listening
 app.listen(PORT, () => {
 	mongoDBConnection();
