@@ -1,6 +1,7 @@
 import express from "express";
 import {
 	UpdateRole,
+	UpdateStatusRoleController,
 	createRole,
 	deleteSingleRole,
 	getAllRole,
@@ -14,5 +15,7 @@ RoleRoute.route("/:id")
 	.get(getSingleRole)
 	.delete(deleteSingleRole)
 	.put(UpdateRole);
+
+RoleRoute.route("/status/:id").patch(UpdateStatusRoleController);
 
 export default RoleRoute;

@@ -10,11 +10,9 @@ import createSlug from "../utility/createSlug.js";
 
 export const getAllPermission = asyncHandler(async (req, res) => {
 	const Permission = await PermissionSchema.find();
-	if (!Permission.length)
-		return res.status(404).json({
-			message: "No Permission found",
-		});
-	res.json(Permission);
+	if (Permission.length > 0) {
+		res.json(Permission);
+	}
 });
 
 /**

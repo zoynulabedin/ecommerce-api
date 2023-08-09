@@ -10,11 +10,9 @@ import createSlug from "../utility/createSlug.js";
 
 export const getAllRole = asyncHandler(async (req, res) => {
 	const Role = await RoleSchema.find();
-	if (!Role.length)
-		return res.status(404).json({
-			message: "No Role found",
-		});
-	res.json(Role);
+	if (Role.length > 0) {
+		res.json(Role);
+	}
 });
 
 /**
@@ -24,21 +22,29 @@ export const getAllRole = asyncHandler(async (req, res) => {
  */
 
 export const createRole = asyncHandler(async (req, res) => {
-	const { name } = req.body;
+	const { name, permissions } = req.body;
 	// validate fields
 	if (!name)
 		return res.status(404).json({
 			message: "empty fields",
 		});
 
+	const existRole = await RoleSchema.findOne({ name });
+
+	if (existRole)
+		return res.status(404).json({
+			message: "Role already exists",
+		});
 
 	// create new user
-	const Role = await RoleSchema.create({
+	const role = await RoleSchema.create({
 		name: name,
 		slug: createSlug(name),
+		permissions,
 	});
-	if (Role) {
+	if (role) {
 		return res.status(200).json({
+			role: role,
 			message: "Role created successfully",
 		});
 	} else {
@@ -71,8 +77,7 @@ export const getSingleRole = asyncHandler(async (req, res) => {
 export const deleteSingleRole = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	const Role = await RoleSchema.findByIdAndDelete(id);
-	if (!Role)
-		return res.status(404).json({ message: "Role not found" });
+	if (!Role) return res.status(404).json({ message: "Role not found" });
 	res.status(200).json({ message: "Role deleted" });
 });
 
@@ -84,19 +89,34 @@ export const deleteSingleRole = asyncHandler(async (req, res) => {
 
 export const UpdateRole = asyncHandler(async (req, res) => {
 	const { id } = req.params;
-	const { name } = req.body;
+	const { name, permissions } = req.body;
+	console.log(permissions);
 	if (!name) return res.status(404).json({ message: "Field is reqquired !" });
 
 	const Role = await RoleSchema.findById(id);
-	if (!Role)
-		return res.status(404).json({ message: "Role not found" });
+	if (!Role) return res.status(404).json({ message: "Role not found" });
 	Role.name = name;
 
 	const updateRole = await RoleSchema.findByIdAndUpdate(id, {
 		name,
 		slug: createSlug(name),
+		permissions,
 	});
-	if (!updateRole)
-		return res.status(404).json({ message: "Not updated" });
-	return res.status(200).json({ message: "Updated the Role" });
+	if (!updateRole) return res.status(404).json({ message: "Not updated" });
+	return res
+		.status(200)
+		.json({ role: updateRole, message: "Role updated successfully" });
+});
+
+export const UpdateStatusRoleController = asyncHandler(async (req, res) => {
+	const { id } = req.params;
+
+	const { status } = req.body;
+	const updateRole = await RoleSchema.findByIdAndUpdate(id, {
+		status: !status,
+	});
+
+	return res
+		.status(200)
+		.json({ role: updateRole, message: "Updated the Role" });
 });
