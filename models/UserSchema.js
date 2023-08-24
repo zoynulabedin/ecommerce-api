@@ -47,8 +47,9 @@ const UserSchema = mongoose.Schema(
 			required: true,
 		},
 		role: {
-			type: String,
-			default: "admin",
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Role",
+			default: "64e79270317571034b27dbc9",
 		},
 		gender: {
 			type: String,

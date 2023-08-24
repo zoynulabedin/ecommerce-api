@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import RoleSchema from "../models/Roles.js";
+import RoleSchema from "../models/Role.js";
 import createSlug from "../utility/createSlug.js";
 
 /**

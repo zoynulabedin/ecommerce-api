@@ -23,7 +23,7 @@ export const tokenVerify = (req, res, next) => {
 			}
 			const me = await User.findOne({
 				email: decode.email,
-			});
+			}).populate('role');
 			req.me = me;
 		
 			next();

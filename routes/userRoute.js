@@ -1,6 +1,8 @@
 import express from "express";
 import {
-    UpdateUser,
+	UpdateStatusUser,
+	UpdateUser,
+	UpdateUserRole,
 	createUser,
 	deleteSingleUser,
 	getAllUsers,
@@ -15,5 +17,7 @@ userRouter
 	.get(getSingleUser)
 	.delete(deleteSingleUser)
 	.patch(UpdateUser);
+userRouter.route("/status/:id").patch(UpdateStatusUser);
+userRouter.route("/role/:id").put(UpdateUserRole);
 
 export default userRouter;
