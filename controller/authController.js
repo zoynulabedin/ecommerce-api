@@ -15,7 +15,7 @@ export const UserLogin = asyncHandler(async (req, res) => {
 		return res.status(400).json({ message: "Invalid email or password" });
 
 	// check user
-	const checkUser = await User.findOne({ email: email });
+	const checkUser = await User.findOne({ email: email }).populate("role");
 	if (!checkUser) return res.status(404).json({ message: "User not found" }); //
 
 	// password match
