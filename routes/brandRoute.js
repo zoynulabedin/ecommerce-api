@@ -16,7 +16,7 @@ BrandRoute.route("/").get(getAllBrand).post(BrandLogo, createBrand);
 BrandRoute.route("/:id")
 	.get(getSingleBrand)
 	.delete(deleteSingleBrand)
-	.put(UpdateBrand);
+	.put(BrandLogo,UpdateBrand);
 
 
 export default BrandRoute;

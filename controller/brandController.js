@@ -1,9 +1,9 @@
 import asyncHandler from "express-async-handler";
 import brandSchema from "../models/Brand.js";
-import { cloudinaryDelete, cloudinaryUpload } from "../utility/cloudinary.js";
 import createSlug from "../utility/createSlug.js";
-import fs from "fs";
 import { findPublicId } from "../utility/helpers.js";
+import { cloudDelete, cloudinaryUpload } from "../utility/cloudinary.js";
+
 
 
 /**
@@ -88,10 +88,9 @@ export const deleteSingleBrand = asyncHandler(async (req, res) => {
 		return res.status(404).json({ message: "Brand not found" });
 	}
 
-
 	if(Brand.logo){
 		const imagePublicID = findPublicId(Brand.logo);
-		 await cloudinaryDelete(imagePublicID);
+		 await cloudDelete(imagePublicID);
 	}
 	return res.status(200).json({ message: "Brand deleted successfully" });
 
@@ -105,24 +104,25 @@ export const deleteSingleBrand = asyncHandler(async (req, res) => {
 
 export const UpdateBrand = asyncHandler(async (req, res) => {
 	const { id } = req.params;
-	const { name } = req.body;
+	const { name,slug } = req.body;
 	if (!name) return res.status(404).json({ message: "Field is reqquired !" });
 
 	const Brand = await brandSchema.findById(id);
-	if (!Brand) return res.status(404).json({ message: "Brand  le not found" });
-	Brand.name = name;
 
-	const updateBrand = await brandSchema.findByIdAndUpdate(
-		id,
-		{
-			name,
-			slug: createSlug(name),
-			mlename,
-		},
-		{ new: true }
-	);
-	if (!updateTags) return res.status(404).json({ message: "Not updated" });
+
+	if (!Brand) return res.status(404).json({ message: "Brand  not found" });
+
+	let updateLogo = Brand.logo
+
+	if(req.file){
+		const logo = await cloudinaryUpload(req.file.path);
+		updateLogo = logo.secure_url;
+	}
+	Brand.name = name;
+	Brand.slug = createSlug(name);
+	Brand.logo = updateLogo;
+	Brand.save();
 	return res
 		.status(200)
-		.json({ Brands: updateTags, message: "Brand updated successfully" });
+		.json({ Brands: updateLogo, message: "Brand updated successfully" });
 });

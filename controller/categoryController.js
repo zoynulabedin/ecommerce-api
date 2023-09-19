@@ -1,6 +1,8 @@
 import asyncHandler from "express-async-handler";
 import categorySchema from "../models/Category.js";
 import createSlug from "../utility/createSlug.js";
+import { cloudDelete, cloudinaryUpload } from "../utility/cloudinary.js";
+import { findPublicId } from "../utility/helpers.js";
 
 /**
  *  @desc get all brand
@@ -39,8 +41,9 @@ export const getAllCategory = asyncHandler(async (req, res) => {
  */
 
 export const createCategory = asyncHandler(async (req, res) => {
-	const { name, parentCat } = req.body;
+	const { name, parentCat,cat_icon } = req.body;
 	// validate fields
+
 	if (!name)
 		return res.status(404).json({
 			message: "empty fields",
@@ -53,11 +56,18 @@ export const createCategory = asyncHandler(async (req, res) => {
 			message: "existCategory already exists",
 		});
 
+	let catIcon = null;
+	if(cat_icon){
+		catIcon = cat_icon;
+	}
+	const cat_photo = await cloudinaryUpload(req.file.path);
 	// create new user
 	const Category = await categorySchema.create({
 		name: name,
 		slug: createSlug(name),
 		parentCat: parentCat ? parentCat : null,
+		cat_icon: catIcon,
+		cat_photo: cat_photo.secure_url,
 	});
 	if (parentCat) {
 		const parent = await categorySchema.findByIdAndUpdate(parentCat, {
@@ -117,6 +127,11 @@ export const deleteSingleCategory = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	const Category = await categorySchema.findByIdAndDelete(id);
 	if (!Category) return res.status(404).json({ message: "Category not found" });
+
+	if (Category.cat_photo) {
+		const imagePublicID = findPublicId(Category.cat_photo);
+		 await cloudDelete(imagePublicID);
+	}
 	res.status(200).json({ message: "Category deleted" });
 });
 
@@ -128,26 +143,41 @@ export const deleteSingleCategory = asyncHandler(async (req, res) => {
 
 export const UpdateCategory = asyncHandler(async (req, res) => {
 	const { id } = req.params;
-	const { name } = req.body;
+	const { name, parentCat, cat_icon} = req.body;
+
 	if (!name) return res.status(404).json({ message: "Field is reqquired !" });
 
 	const Category = await categorySchema.findById(id);
+
+
 	if (!Category)
 		return res.status(404).json({ message: "Category  le not found" });
-	Category.name = name;
 
-	const updateCategory = await categorySchema.findByIdAndUpdate(
-		id,
-		{
-			name,
-			slug: createSlug(name),
-			logo: req.files.logo[0].filename,
-		},
-		{ new: true }
-	);
-	if (!updateCategory) return res.status(404).json({ message: "Not updated" });
+	let parentCatt =  Category.parentCat;
+	if(parentCat){
+		parentCatt = parentCat;
+	}
+	 let catFile = Category.cat_photo;
+	if(req.file){
+		const catPhoto = await cloudinaryUpload(req.file.path);
+		catFile = catPhoto.secure_url;
+		if (Category.cat_photo) {
+			const imagePublicID = findPublicId(Category.cat_photo);
+			 await cloudDelete(imagePublicID);
+		}
+	}
+
+	Category.name = name;
+	Category.slug = createSlug(name);
+	Category.cat_icon = cat_icon;
+	Category.parentCat = parentCatt;
+	Category.cat_photo = catFile;
+	await Category.save();
+	
+	
+	if (!Category) return res.status(404).json({ message: "Not updated" });
 	return res.status(200).json({
-		category: updateCategory,
+		category: Category,
 		message: "Category updated successfully",
 	});
 });

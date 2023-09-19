@@ -6,11 +6,9 @@ cloudinary.config({
 	api_secret: "kMNUIK7J6QZBK2TyDVudI2rt7Fo",
 });
 
-export const cloudinaryUpload = async (path) => {
+const cloudinaryUpload = async (path) => {
 	try {
-		const result = await cloudinary.uploader.upload(path, {
-			folder: "ecommerce",
-		});
+		const result = await cloudinary.uploader.upload(path);
 		return result;
 	} catch (error) {
 		console.error("Error uploading to Cloudinary:", error.message);
@@ -19,7 +17,14 @@ export const cloudinaryUpload = async (path) => {
 };
 
 //  delete image from cloudinary
-export const cloudinaryDelete = async (imagePublicID) => {	
-	const result = await cloudinary.uploader.destroy(imagePublicID);
-	console.log(result);
+const cloudDelete = async (publicID) => {
+	try {
+		const result = await cloudinary.uploader.destroy(publicID);
+		return result;
+	} catch (error) {
+		console.error("Error uploading to Cloudinary:", error.message);
+		throw error; // Re-throw the error to propagate it to the caller
+	}
 }
+
+export {cloudinaryUpload, cloudDelete}
