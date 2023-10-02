@@ -2,6 +2,7 @@ import express from "express";
 
 import {
 	UpdateBrand,
+	UpdateStatusBrand,
 	createBrand,
 	deleteSingleBrand,
 	getAllBrand,
@@ -17,6 +18,7 @@ BrandRoute.route("/:id")
 	.get(getSingleBrand)
 	.delete(deleteSingleBrand)
 	.put(BrandLogo,UpdateBrand);
+	BrandRoute.route("/status/:id").patch(UpdateStatusBrand);
 
 
 export default BrandRoute;

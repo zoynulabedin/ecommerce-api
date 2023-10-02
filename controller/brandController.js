@@ -25,7 +25,7 @@ export const getAllBrand = asyncHandler(async (req, res) => {
 
 export const createBrand = asyncHandler(async (req, res) => {
 	const { name } = req.body;
-	
+		console.log(req.file);
 	// validate fields
 	if (!name)
 		return res.status(404).json({
@@ -92,7 +92,7 @@ export const deleteSingleBrand = asyncHandler(async (req, res) => {
 		const imagePublicID = findPublicId(Brand.logo);
 		 await cloudDelete(imagePublicID);
 	}
-	return res.status(200).json({ message: "Brand deleted successfully" });
+	return res.status(200).json({brand:Brand , message: "Brand deleted successfully" });
 
 });
 
@@ -125,4 +125,24 @@ export const UpdateBrand = asyncHandler(async (req, res) => {
 	return res
 		.status(200)
 		.json({ Brands: updateLogo, message: "Brand updated successfully" });
+});
+
+
+/**
+ *  @desc user status update
+ * @route patch/user
+ * @access public
+ */
+
+export const UpdateStatusBrand = asyncHandler(async (req, res) => {
+	const { id } = req.params;
+
+	const { status } = req.body;
+	const updateUserStatus = await brandSchema.findByIdAndUpdate(id, {
+		status: !status,
+	});
+
+	return res
+		.status(200)
+		.json({ brand: updateUserStatus, message: "Updated the User",});
 });

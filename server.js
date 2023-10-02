@@ -12,6 +12,7 @@ import userRoute from "./routes/userRoute.js";
 import TagsRoute from "./routes/tagsRoute.js";
 import colors from "colors";
 import CategoryRoute from "./routes/categoryRoute.js";
+import ProductRoute from "./routes/ProductRoute.js";
 // environment variables
 dotenv.config();
 
@@ -41,6 +42,7 @@ app.use("/api/v1/role", RoleRoute);
 app.use("/api/v1/brand", BrandRoute);
 app.use("/api/v1/tags", TagsRoute);;
 app.use("/api/v1/category", CategoryRoute);
+app.use("/api/v1/product", ProductRoute);
 // server listening
 app.listen(PORT, () => {
 	mongoDBConnection();
