@@ -113,7 +113,7 @@ export const UpdateBrand = asyncHandler(async (req, res) => {
 	if (!Brand) return res.status(404).json({ message: "Brand  not found" });
 
 	let updateLogo = Brand.logo
-
+	console.log(req.file);
 	if(req.file){
 		const logo = await cloudinaryUpload(req.file.path);
 		updateLogo = logo.secure_url;
@@ -124,7 +124,7 @@ export const UpdateBrand = asyncHandler(async (req, res) => {
 	Brand.save();
 	return res
 		.status(200)
-		.json({ Brands: updateLogo, message: "Brand updated successfully" });
+		.json({ brand: Brand, message: "Brand updated successfully" });
 });
 
 

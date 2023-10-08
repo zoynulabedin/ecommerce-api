@@ -75,12 +75,12 @@ export const deleteSingleTags = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	const Tags = await tagsSchema.findByIdAndDelete(id);
 	if (!Tags) return res.status(404).json({ message: "Tags not found" });
-	res.status(200).json({ message: "Tags deleted" });
+	res.status(200).json({tags:Tags, message: "Tags deleted" });
 });
 
 /**
  *  @desc Update Tags
- * @route Update/Tags
+ * @route Update/Tags 
  * @access public
  */
 
@@ -105,4 +105,19 @@ export const UpdateTags = asyncHandler(async (req, res) => {
 	return res
 		.status(200)
 		.json({ Tags: updateTags, message: "Tags updated successfully" });
+});
+
+
+
+export const UpdateStatusTags = asyncHandler(async (req, res) => {
+	const { id } = req.params;
+
+	const { status } = req.body;
+	const updateTagsStatus = await tagsSchema.findByIdAndUpdate(id, {
+		status: !status,
+	});
+
+	return res
+		.status(200)
+		.json({ tags: updateTagsStatus, message: "Updated the Tag",});
 });
